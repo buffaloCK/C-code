@@ -1,0 +1,10 @@
+static double Calculate(string userInput)
+{
+    var parts = userInput.Split();
+    var principal = double.Parse(parts[0]);
+    var annualRate = double.Parse(parts[1]);
+    var months = int.Parse(parts[2]);
+    var monthlyRate = annualRate / 100 / 12;
+		
+    return principal * Math.Pow(1 + monthlyRate, months);
+}
