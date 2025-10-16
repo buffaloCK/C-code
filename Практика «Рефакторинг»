@@ -1,0 +1,82 @@
+using System;
+using Avalonia.Media;
+using RefactorMe.Common;
+
+namespace RefactorMe
+{
+    public static class DrawingEngine
+    {
+        private static float x;
+        private static float y;
+        private static IGraphics graphics;
+
+        public static void Initialize(IGraphics graphicsInstance)
+        {
+            graphics = graphicsInstance;
+            graphics.Clear(Colors.Black);
+        }
+
+        public static void SetPosition(float newX, float newY)
+        {
+            x = newX;
+            y = newY;
+        }
+
+        public static void DrawLineTo(Pen pen, double length, double angle)
+        {
+            var x1 = (float)(x + length * Math.Cos(angle));
+            var y1 = (float)(y + length * Math.Sin(angle));
+            graphics.DrawLine(pen, x, y, x1, y1);
+            SetPosition(x1, y1);
+        }
+
+        public static void MoveWithoutDrawing(double length, double angle)
+        {
+            var newX = (float)(x + length * Math.Cos(angle));
+            var newY = (float)(y + length * Math.Sin(angle));
+            SetPosition(newX, newY);
+        }
+    }
+
+    public static class ImpossibleSquare
+    {
+        private const float SideRatio = 0.375f;
+        private const float ThicknessRatio = 0.04f;
+
+        public static void Draw(int width, int height, double rotationAngle, IGraphics graphics)
+        {
+            DrawingEngine.Initialize(graphics);
+
+            var size = Math.Min(width, height);
+            var sideLength = size * SideRatio;
+            var thickness = size * ThicknessRatio;
+            var diagonalLength = Math.Sqrt(2) * (sideLength + thickness) / 2;
+
+            var startX = (float)(diagonalLength * Math.Cos(Math.PI / 4));
+            var startY = (float)(-diagonalLength * Math.Sin(Math.PI / 4));
+
+            DrawingEngine.SetPosition(width / 2f + startX, height / 2f + startY);
+
+            var pen = new Pen(Brushes.Yellow, 1);
+
+            DrawAllSides(pen, sideLength, thickness);
+        }
+
+        private static void DrawAllSides(Pen pen, double sideLength, double thickness)
+        {
+            DrawImpossibleSide(pen, sideLength, thickness, 0);
+            DrawImpossibleSide(pen, sideLength, thickness, -Math.PI / 2);
+            DrawImpossibleSide(pen, sideLength, thickness, Math.PI);
+            DrawImpossibleSide(pen, sideLength, thickness, Math.PI / 2);
+        }
+
+        private static void DrawImpossibleSide(Pen pen, double sideLength, double thickness, double angle)
+        {
+            DrawingEngine.DrawLineTo(pen, sideLength, angle);
+            DrawingEngine.DrawLineTo(pen, thickness * Math.Sqrt(2), angle + Math.PI / 4);
+            DrawingEngine.DrawLineTo(pen, sideLength, angle + Math.PI);
+            DrawingEngine.DrawLineTo(pen, sideLength - thickness, angle + Math.PI / 2);
+            DrawingEngine.MoveWithoutDrawing(thickness, angle - Math.PI / 2);
+        }
+    }
+}
