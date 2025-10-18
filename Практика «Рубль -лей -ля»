@@ -1,0 +1,17 @@
+namespace Pluralize
+{
+    public static class PluralizeTask
+    {
+        public static string PluralizeRubles(int count)
+        {
+            var lastTwo = count % 100;
+            var last = count % 10;
+
+            if (lastTwo >= 11 && lastTwo <= 14 || last == 0 || last >= 5)
+                return "рублей";
+            else if (last == 1)
+                return "рубль";
+            return "рубля";
+        }
+    }
+}
