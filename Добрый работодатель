@@ -1,0 +1,5 @@
+public static string GetGreetingMessage(string name, double salary)
+{
+    int zp = (int)Math.Ceiling(salary);
+    return "Hello, " + name + ", your salary is " + zp;// возвращает "Hello, <name>, your salary is <salary>"
+}
