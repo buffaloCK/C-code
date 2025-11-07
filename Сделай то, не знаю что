@@ -1,0 +1,10 @@
+static int Decode(string a)
+{
+    string digitsOnly = new string(a.Where(char.IsDigit).ToArray());
+    
+    if (string.IsNullOrEmpty(digitsOnly))
+        return 0;
+    
+    int number = int.Parse(digitsOnly);
+    return number % 1024;
+}
