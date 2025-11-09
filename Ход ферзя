@@ -1,0 +1,9 @@
+public static bool IsCorrectMove(string from, string to)
+{
+    if (from == to) return false;
+    
+    var dx = Math.Abs(to[0] - from[0]); // смещение по горизонтали
+    var dy = Math.Abs(to[1] - from[1]); // смещение по вертикали
+    
+    return dx == 0 || dy == 0 || dx == dy;
+}
