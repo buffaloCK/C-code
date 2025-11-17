@@ -1,0 +1,15 @@
+private static void WriteTextWithBorder(string text)
+{
+    string bordertop = "";
+	for (int i = 0; i < text.Length+2; i++)
+		bordertop += "-";
+	
+    bordertop = "+" + bordertop + "+";
+
+	string borderbottom = bordertop;
+	
+    text = "| " + text + " |";
+	Console.WriteLine(bordertop);
+	Console.WriteLine(text);
+    Console.WriteLine(borderbottom);       
+}
