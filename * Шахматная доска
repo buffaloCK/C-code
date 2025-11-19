@@ -17,3 +17,5 @@ private static void WriteBoard(int size)
     }
     Console.WriteLine();
 }
+
+
