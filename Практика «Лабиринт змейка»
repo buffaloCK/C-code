@@ -1,0 +1,23 @@
+namespace Mazes;
+
+public static class SnakeMazeTask
+{
+    public static void MoveOut(Robot robot, int width, int height)
+    {
+        while (!robot.Finished)
+        {
+            MoveToDirection(robot, Direction.Right, width - 3);
+            MoveToDirection(robot, Direction.Down, 2);
+            MoveToDirection(robot, Direction.Left, width - 3);
+            
+            if (!robot.Finished)
+                MoveToDirection(robot, Direction.Down, 2);
+        }
+    }
+
+    private static void MoveToDirection(Robot robot, Direction dir, int steps)
+    {
+        for (var i = 0; i < steps && !robot.Finished; i++)
+            robot.MoveTo(dir);
+    }
+}
