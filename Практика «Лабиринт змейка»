@@ -21,3 +21,5 @@ public static class SnakeMazeTask
             robot.MoveTo(dir);
     }
 }
+
+
