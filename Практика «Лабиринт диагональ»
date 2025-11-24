@@ -1,0 +1,40 @@
+namespace Mazes;
+
+public static class DiagonalMazeTask
+{
+    public static void MoveOut(Robot robot, int width, int height)
+    {
+        if (width > height)
+            MoveDiagonal(robot, width - 3, height - 3, Direction.Right, Direction.Down);
+        else
+            MoveDiagonal(robot, height - 3, width - 3, Direction.Down, Direction.Right);
+    }
+
+    private static void MoveDiagonal(Robot robot, int longSteps, int shortSteps, Direction longDir, Direction shortDir)
+    {
+        var ratio = longSteps / (shortSteps + 1);
+        var extraSteps = longSteps % (shortSteps + 1);
+
+        for (int i = 0; i < shortSteps; i++)
+        {
+            var currentLongSteps = ratio;
+            if (i < extraSteps)
+                currentLongSteps = ratio + 1;
+                
+            MoveDirection(robot, currentLongSteps, longDir);
+            MoveDirection(robot, 1, shortDir);
+        }
+        
+        var finalLongSteps = ratio;
+        if (shortSteps < extraSteps)
+            finalLongSteps = ratio + 1;
+            
+        MoveDirection(robot, finalLongSteps, longDir);
+    }
+
+    private static void MoveDirection(Robot robot, int steps, Direction direction)
+    {
+        for (int i = 0; i < steps; i++)
+            robot.MoveTo(direction);
+    }
+}
