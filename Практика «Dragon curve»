@@ -1,0 +1,40 @@
+using System;
+
+namespace Fractals;
+
+internal static class DragonFractalTask
+{
+    public static void DrawDragonFractal(Pixels pixels, int iterationsCount, int seed)
+    {
+        var x = 1.0;
+        var y = 0.0;
+        
+        var random = new Random(seed);
+        
+        var angle45 = Math.PI / 4;
+        var angle135 = 3 * Math.PI / 4;
+        var scaleFactor = Math.Sqrt(2);
+        
+        pixels.SetPixel(x, y);
+        
+        for (int i = 0; i < iterationsCount; i++)
+        {
+            double tempX, tempY;
+            
+            if (random.Next(2) == 0)
+            {
+                tempX = (x * Math.Cos(angle45) - y * Math.Sin(angle45)) / scaleFactor;
+                tempY = (x * Math.Sin(angle45) + y * Math.Cos(angle45)) / scaleFactor;
+            }
+            else
+            {
+                tempX = (x * Math.Cos(angle135) - y * Math.Sin(angle135)) / scaleFactor + 1;
+                tempY = (x * Math.Sin(angle135) + y * Math.Cos(angle135)) / scaleFactor;
+            }
+            
+            x = tempX;
+            y = tempY;
+            pixels.SetPixel(x, y);
+        }
+    }
+}
