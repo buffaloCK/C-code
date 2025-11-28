@@ -1,0 +1,8 @@
+public static int GetElementCount(int[] items, int itemToCount)
+{
+	var itemToFind = 0;
+	foreach (var e in items)
+		if (e == itemToCount)
+			itemToFind++;
+    return itemToFind;
+}
