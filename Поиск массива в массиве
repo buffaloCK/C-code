@@ -1,0 +1,16 @@
+public static bool ContainsAtIndex(int[] array, int[] subArray, int index)
+{
+    if (subArray.Length == 0)
+        return true;
+    
+    if (index + subArray.Length > array.Length)
+        return false;
+    
+    for (int i = 0; i < subArray.Length; i++)
+    {
+        if (array[index + i] != subArray[i])
+            return false;
+    }
+    
+    return true;
+}
