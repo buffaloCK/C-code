@@ -1,0 +1,58 @@
+namespace TextAnalysis;
+
+static class SentencesParserTask
+{
+    private static char[] sentenceSeparators = new[] { '.', '!', '?', ';', ':', '(', ')' };
+
+    public static List<List<string>> ParseSentences(string text)
+    {
+        var sentencesList = new List<List<string>>();
+        if (string.IsNullOrEmpty(text))
+            return sentencesList;
+
+        var sentences = text.Split(sentenceSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (var sentence in sentences)
+        {
+            var words = SplitSentenceIntoWords(sentence);
+            
+            if (words.Count > 0)
+            {
+                sentencesList.Add(words);
+            }
+        }
+
+        return sentencesList;
+    }
+
+    private static List<string> SplitSentenceIntoWords(string sentence)
+    {
+        var words = new List<string>();
+        var currentWord = new System.Text.StringBuilder();
+        
+        foreach (var character in sentence)
+        {
+            if (char.IsLetter(character) || character == '\'')
+            {
+                currentWord.Append(char.ToLower(character));
+            }
+            else
+            {
+                AddWordIfNotEmpty(words, currentWord);
+            }
+        }
+        
+        AddWordIfNotEmpty(words, currentWord);
+        
+        return words;
+    }
+
+    private static void AddWordIfNotEmpty(List<string> words, System.Text.StringBuilder currentWord)
+    {
+        if (currentWord.Length > 0)
+        {
+            words.Add(currentWord.ToString());
+            currentWord.Clear();
+        }
+    }
+}
