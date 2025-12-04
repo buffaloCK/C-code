@@ -1,0 +1,101 @@
+namespace TextAnalysis;
+
+static class FrequencyAnalysisTask
+{
+    public static Dictionary<string, string> GetMostFrequentNextWords(List<List<string>> text)
+    {
+        var result = new Dictionary<string, string>();
+        
+        if (IsEmptyText(text))
+            return result;
+
+        var frequencyDict = BuildFrequencyDictionary(text);
+        
+        foreach (var start in frequencyDict.Keys)
+        {
+            result[start] = GetMostFrequentNextWord(frequencyDict[start]);
+        }
+        
+        return result;
+    }
+
+    private static bool IsEmptyText(List<List<string>> text)
+    {
+        return text == null || text.Count == 0;
+    }
+
+    private static Dictionary<string, Dictionary<string, int>> BuildFrequencyDictionary(List<List<string>> text)
+    {
+        var frequencyDict = new Dictionary<string, Dictionary<string, int>>();
+        
+        foreach (var sentence in text)
+        {
+            ProcessBigrams(frequencyDict, sentence);
+            ProcessTrigrams(frequencyDict, sentence);
+        }
+        
+        return frequencyDict;
+    }
+
+    private static void ProcessBigrams(
+        Dictionary<string, Dictionary<string, int>> frequencyDict,
+        List<string> sentence)
+    {
+        for (int i = 0; i < sentence.Count - 1; i++)
+        {
+            AddNGram(frequencyDict, sentence[i], sentence[i + 1]);
+        }
+    }
+
+    private static void ProcessTrigrams(
+        Dictionary<string, Dictionary<string, int>> frequencyDict,
+        List<string> sentence)
+    {
+        for (int i = 0; i < sentence.Count - 2; i++)
+        {
+            var start = sentence[i] + " " + sentence[i + 1];
+            AddNGram(frequencyDict, start, sentence[i + 2]);
+        }
+    }
+
+    private static void AddNGram(
+        Dictionary<string, Dictionary<string, int>> frequencyDict,
+        string start, 
+        string nextWord)
+    {
+        if (!frequencyDict.ContainsKey(start))
+            frequencyDict[start] = new Dictionary<string, int>();
+        
+        if (!frequencyDict[start].ContainsKey(nextWord))
+            frequencyDict[start][nextWord] = 0;
+        
+        frequencyDict[start][nextWord]++;
+    }
+
+    private static string GetMostFrequentNextWord(Dictionary<string, int> frequencyDict)
+    {
+        string bestNextWord = null;
+        int maxFrequency = 0;
+        
+        foreach (var pair in frequencyDict)
+        {
+            if (ShouldUpdateBestWord(pair, bestNextWord, maxFrequency))
+            {
+                maxFrequency = pair.Value;
+                bestNextWord = pair.Key;
+            }
+        }
+        
+        return bestNextWord;
+    }
+
+    private static bool ShouldUpdateBestWord(
+        KeyValuePair<string, int> currentPair,
+        string currentBestWord,
+        int currentMaxFrequency)
+    {
+        return currentPair.Value > currentMaxFrequency || 
+               (currentPair.Value == currentMaxFrequency && 
+                string.CompareOrdinal(currentPair.Key, currentBestWord) < 0);
+    }
+}
