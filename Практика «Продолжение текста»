@@ -1,0 +1,60 @@
+namespace TextAnalysis;
+
+static class TextGeneratorTask
+{
+    public static string ContinuePhrase(
+        Dictionary<string, string> nextWords,
+        string phraseBeginning,
+        int wordsCount)
+    {
+        if (ShouldReturnImmediately(wordsCount, nextWords))
+            return phraseBeginning;
+
+        var result = new System.Text.StringBuilder(phraseBeginning);
+        var currentWords = new List<string>(phraseBeginning.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+
+        for (int i = 0; i < wordsCount; i++)
+        {
+            var nextWord = FindNextWord(nextWords, currentWords);
+            if (nextWord == null)
+                break;
+
+            result.Append(' ').Append(nextWord);
+            currentWords.Add(nextWord);
+        }
+
+        return result.ToString();
+    }
+
+    private static bool ShouldReturnImmediately(int wordsCount, Dictionary<string, string> nextWords)
+    {
+        return wordsCount <= 0 || nextWords == null || nextWords.Count == 0;
+    }
+
+    private static string FindNextWord(Dictionary<string, string> nextWords, List<string> currentWords)
+    {
+        var nextWord = FindNextWordByLastTwoWords(nextWords, currentWords);
+        if (nextWord != null)
+            return nextWord;
+        
+        return FindNextWordByLastWord(nextWords, currentWords);
+    }
+
+    private static string FindNextWordByLastTwoWords(Dictionary<string, string> nextWords, List<string> currentWords)
+    {
+        if (currentWords.Count < 2)
+            return null;
+
+        var lastTwoWords = currentWords[^2] + " " + currentWords[^1];
+        return nextWords.TryGetValue(lastTwoWords, out var nextWord) ? nextWord : null;
+    }
+
+    private static string FindNextWordByLastWord(Dictionary<string, string> nextWords, List<string> currentWords)
+    {
+        if (currentWords.Count < 1)
+            return null;
+
+        var lastWord = currentWords[^1];
+        return nextWords.TryGetValue(lastWord, out var nextWord) ? nextWord : null;
+    }
+}
