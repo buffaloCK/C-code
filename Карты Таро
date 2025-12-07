@@ -1,0 +1,4 @@
+private static string GetSuit(Suits suit)
+{
+  return new string[] {"жезлов", "монет", "кубков", "мечей"} [(int)suit];
+}
