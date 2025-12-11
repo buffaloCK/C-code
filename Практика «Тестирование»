@@ -1,0 +1,20 @@
+        [TestCase(" ", new string[] { })]
+        [TestCase("'", new[] { "" })]
+        [TestCase("text", new[] { "text" })]
+        [TestCase("hello world", new[] { "hello", "world" })]
+        [TestCase("'hello'\"world\"", new[] { "hello", "world" })]
+        [TestCase("\"hello 'world'\"", new[] { "hello 'world'" })]
+        [TestCase("'hello \"world\"'", new[] { "hello \"world\"" })]
+        [TestCase("\"vzlom escape\\\\\"", new[] { "vzlom escape\\" })]
+        [TestCase("'no closing quote", new[] { "no closing quote" })]
+        [TestCase("simple_field_escape\\\\test", new[] { "simple_field_escape\\\\test" })]
+        [TestCase("'escapin\\' unescapable'", new[] { "escapin' unescapable" })]
+        [TestCase("\"escapin\\\" unescapable\"", new[] { "escapin\" unescapable" })]
+        [TestCase("  foo  ", new[] { "foo" })]
+        [TestCase("a''", new[] { "a", "" })]
+        [TestCase("''a", new[] { "", "a" })]
+        [TestCase("' ", new[] { " " })]
+        public static void RunTests(string input, string[] expectedOutput)
+        {
+            Test(input, expectedOutput);
+        }
