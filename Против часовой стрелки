@@ -1,0 +1,8 @@
+public class ClockwiseComparer : IComparer
+{
+ public int Compare(object x, object y)
+ {
+ Point p1 = (Point)x;
+ Point p2 = (Point)y;
+ return Math.Atan2(-p1.Y, -p1.X).CompareTo(Math.Atan2(-p2.Y, -p2.X)); }
+}
