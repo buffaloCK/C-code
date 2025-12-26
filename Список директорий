@@ -1,0 +1,9 @@
+public static List<DirectoryInfo> GetAlbums(List<FileInfo> files)
+{
+ List<DirectoryInfo> res = new List<DirectoryInfo>();
+foreach (FileInfo file in files)
+ if((file.Extension == ".mp3" || file.Extension == ".wav") && !res.Any(x => x.FullName == file.DirectoryName))
+ res.Add(file.Directory);
+
+return res;
+}
