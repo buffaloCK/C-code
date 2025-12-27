@@ -1,0 +1,38 @@
+namespace Passwords;
+
+public class CaseAlternatorTask
+{
+    public static List<string> AlternateCharCases(string lowercaseWord)
+    {
+        var result = new List<string>();
+        AlternateCharCases(lowercaseWord.ToCharArray(), 0, result);
+        result = result.Distinct().OrderBy(s => s).ToList();
+        return result;
+    }
+
+    static void AlternateCharCases(char[] word, int currentIndex, List<string> result)
+    {
+        if (currentIndex == word.Length)
+        {
+            result.Add(new string(word));
+            return;
+        }
+        
+        var currentChar = word[currentIndex];
+        
+        if (!char.IsLetter(currentChar) || 
+            char.ToLower(currentChar) == char.ToUpper(currentChar))
+        {
+            AlternateCharCases(word, currentIndex + 1, result);
+            return;
+        }
+        
+        word[currentIndex] = char.ToLower(currentChar);
+        AlternateCharCases(word, currentIndex + 1, result);
+        
+        word[currentIndex] = char.ToUpper(currentChar);
+        AlternateCharCases(word, currentIndex + 1, result);
+        
+        word[currentIndex] = currentChar;
+    }
+}
