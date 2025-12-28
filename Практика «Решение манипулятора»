@@ -1,0 +1,60 @@
+using NUnit.Framework;
+using System;
+using System.Data;
+using static Manipulation.Manipulator;
+
+namespace Manipulation;
+
+public static class ManipulatorTask
+{
+	public static double[] MoveManipulatorTo(double x, double y, double alpha)
+	{
+		var wristX = x + Palm * Math.Cos(Math.PI - alpha);
+		var wristY = y + Palm * Math.Sin(Math.PI - alpha);
+
+		var shoulderToWristDistance = Math.Sqrt(wristX * wristX + wristY * wristY);
+		var elbowAngle = TriangleTask.GetABAngle(UpperArm, Forearm, shoulderToWristDistance);
+
+		var shoulderWristAngle = TriangleTask.GetABAngle(UpperArm, shoulderToWristDistance, Forearm);
+		var wristToOxAngle = Math.Atan2(wristY, wristX);
+        var shoulderAngle = shoulderWristAngle + wristToOxAngle;
+
+		var wristAngle = -alpha - shoulderAngle - elbowAngle;
+
+        if (double.IsNaN(shoulderAngle) || double.IsNaN(elbowAngle) || double.IsNaN(wristAngle))
+            return new[] { double.NaN, double.NaN, double.NaN };
+
+        return new[] { shoulderAngle, elbowAngle, wristAngle };
+	}
+}
+
+[TestFixture]
+public class ManipulatorTask_Tests
+{
+	[Test]
+	public void TestMoveManipulatorTo()
+	{
+		var random= new Random();
+		var maxReach = UpperArm + Forearm + Palm;
+
+        for (int i = 0; i < 20; i++)
+		{
+            var x = random.NextDouble() * maxReach * 2 - maxReach * 2;
+            var y = random.NextDouble() * maxReach * 2 - maxReach * 2;
+
+            var alpha = random.NextDouble() * 2 * Math.PI - Math.PI;
+
+            var angles = ManipulatorTask.MoveManipulatorTo(x, y, alpha);
+
+            if (!double.IsNaN(angles[0]))
+            {
+                var joints = AnglesToCoordinatesTask.GetJointPositions(angles[0], angles[1], angles[2]);
+
+                var palmX = joints[2].X;
+                var palmY = joints[2].Y;
+                Assert.That(palmX, Is.EqualTo(x).Within(1e-5));
+                Assert.That(palmY, Is.EqualTo(y).Within(1e-5));
+            }
+        }
+	}
+}
